@@ -146,6 +146,23 @@ class husqvarna extends eqLogic {
                 $cmd->setTemplate('mobile', $template_mobile);
                 $cmd->save();
             }
+	    else
+            {
+            	$cmd->setType($type);
+		$cmd->setSubType($subtype);
+		$cmd->setUnite($unit);
+		$cmd->setDisplay('invertBinary',$invertBinary);
+		$cmd->setDisplay('generic_type', $generic_type);
+/*		
+		$cmd->setTemplate('dashboard', $template_dashboard);
+		$cmd->setTemplate('mobile', $template_mobile);
+*/
+		if ( $listValue != "" )
+		{
+			$cmd->setConfiguration('listValue', $listValue);
+		}
+		$cmd->save();
+            }
         }
     }
 
@@ -199,8 +216,8 @@ class husqvarna extends eqLogic {
 		case 69 : return "Arrêt manuel de l'interrupteur"; break;
 		case 74 : return "En dehors de la zone de protection virtuelle"; break;
 		case 78 : return "Défaut d’entrainement"; break;
+		default : return "Défaut inconnu";
 	}
-
     }
 
     public static function pull() {
@@ -237,8 +254,10 @@ class husqvarna extends eqLogic {
 						$lastErrorMessage = self::getLastErrorMessage($status->{$id});
 						log::add('husqvarna','info',"Refresh lastErrorMessage : ".$lastErrorMessage);
 						$cmd2 = $this->getCmd(null, "lastErrorMessage");
-						$cmd2->event($lastErrorMessage);
-						$cmd2->setCollectDate('');
+            					if (is_object($cmd2))  {
+							$cmd2->event($lastErrorMessage);
+							$cmd2->setCollectDate('');
+						}
 			    		}
 				}
 
